@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Today from './Today';
 
+navigator.geolocation = require('@react-native-community/geolocation');
+
 const baseUri = 'http://api.weatherapi.com/v1';
 
 const App = () => {
