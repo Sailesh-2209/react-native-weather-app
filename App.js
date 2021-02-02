@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Today from './Today';
+import Navbar from './Navbar';
 
 navigator.geolocation = require('@react-native-community/geolocation');
 
@@ -27,6 +28,7 @@ const App = () => {
 
   return (
     <View style={styles.container} >
+      <Navbar />
       <Today />
     </View>
   );
