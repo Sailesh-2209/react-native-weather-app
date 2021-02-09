@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Today from './Today';
 import Navbar from './Navbar';
-
-const axios = require('axios').default;
+import Loading from './Loading';
 
 navigator.geolocation = require('@react-native-community/geolocation');
 
@@ -16,7 +15,7 @@ const App = () => {
   const [ todayData, setTodayData ] = useState({});
 
   const getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
+     navigator.geolocation.getCurrentPosition((position) => {
       let lat = position.coords.latitude;
       let long = position.coords.longitude;
       let coords = [lat, long];
@@ -25,26 +24,35 @@ const App = () => {
   }
 
   const fetchCurrentWeather = async () => {
-    let data = {};
-    try {
-      let response = await axios.get(baseUri, {
-        params: {
-          key: d441d4ac38c6447c847140210203011,
-          q: `${coords[0]},${coords[1]}`
-        }
-      });
-      data = await response.json();
-    } catch (error) {
-      console.log(error);
+    let url = baseUri + `/current.json?key=d441d4ac38c6447c847140210203011&q=${coords[0]},${coords[1]}`;
+    let response = await fetch(url);
+    let data = await response.json();
+    if (todayData.current === undefined) {
+      setTodayData(data);
     }
-    setTodayData(data);
-    setLoading(false);
+    if (todayData === {}) {
+      setLoading(true);
+    }
+    else if (todayData.current === undefined) {
+      setLoading(true);
+    }
+    else {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     getCurrentLocation();
     fetchCurrentWeather();
-  }, []);
+    if (todayData.current === undefined) {
+      fetchCurrentWeather();
+    }
+    console.log(todayData);
+  }, [todayData]);
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <View style={styles.container} >
